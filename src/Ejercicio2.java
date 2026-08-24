@@ -13,6 +13,7 @@ public class Ejercicio2 {
         WebDriverWait wait = new WebDriverWait(dr, Duration.ofSeconds(10));
         dr.manage().window().maximize();
 
+
         try {
             dr.get("https://bstackdemo.com/");
 
