@@ -1,11 +1,10 @@
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.WebElement;
 import java.time.Duration;
-import java.util.List;
 
 public class Ejercicio2 {
     public static void main(String[] args) {
@@ -13,48 +12,30 @@ public class Ejercicio2 {
         WebDriverWait wait = new WebDriverWait(dr, Duration.ofSeconds(10));
         dr.manage().window().maximize();
 
-
         try {
             dr.get("https://bstackdemo.com/");
 
-            List<WebElement> productos = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".shelf-item")));
-            int cantidadInicial = productos.size();
-            System.out.println("Cantidad inicial de productos: " + cantidadInicial);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".shelf-item")));
+
+            int cantidadInicial = dr.findElements(By.cssSelector(".shelf-item")).size();
+            System.out.println("Productos iniciales: " + cantidadInicial);
 
             WebElement samsung = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[contains(.,'Samsung')]")));
+            samsung.click();
 
-            if (!samsung.isSelected()) {
-                samsung.click();
-            }
+            wait.until(driver -> driver.findElements(By.cssSelector(".shelf-item")).size() < cantidadInicial);
 
-            if (samsung.isSelected()) {
-                System.out.println("Samsung quedó seleccionado correctamente.");
-            } else {
-                System.out.println("Samsung NO quedó seleccionado.");
-            }
-
-            wait.until(driver -> {
-                List<WebElement> productosActualizados = driver.findElements(By.cssSelector(".shelf-item"));
-                return productosActualizados.size() < cantidadInicial;
-            });
-
-            List<WebElement> productosFiltrados = dr.findElements(By.cssSelector(".shelf-item"));
-            int cantidadFinal = productosFiltrados.size();
-            System.out.println("Cantidad final de productos: " + cantidadFinal);
-
-            System.out.println("Productos Samsung:");
-
-            for (WebElement producto : productosFiltrados) {
-                System.out.println(producto.getText());
-            }
+            int cantidadFinal = dr.findElements(By.cssSelector(".shelf-item")).size();
+            System.out.println("Productos de samsung: " + cantidadFinal);
 
             if (cantidadFinal < cantidadInicial) {
-                System.out.println("prueba exitosa");
+                System.out.println("La prueba paso");
             } else {
-                System.out.println("prueba fallida");
+                System.out.println("La prueba fallo");
             }
 
         } finally {
+            dr.quit();
         }
     }
 }
